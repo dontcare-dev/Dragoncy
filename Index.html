@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio</title>
+<!-- Load images from companion file: place images.js in same folder -->
+<script src="images.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Tokyo+Zoo&family=M+PLUS+Rounded+1c:wght@300;400;700;900&family=Josefin+Sans:ital,wght@0,300;0,400;0,700;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --pink:#ff6b8a; --rose:#e8194b; --lp:#ffb3c6;
+    --dark:#0d0005; --card:rgba(13,0,5,0.78); --bdr:rgba(255,107,138,0.28);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{min-height:100vh;font-family:'M PLUS Rounded 1c',sans-serif;background:var(--dark);color:#fff0f3;overflow-x:hidden;cursor:crosshair}
+
+  /* BG */
+  .bg-layer{position:fixed;inset:0;z-index:0}
+  #bgImg{width:100%;height:100%;object-fit:cover;object-position:center 30%;
+    filter:saturate(1.5) brightness(0.52);
+    -webkit-mask-image:linear-gradient(to bottom,rgba(0,0,0,0) 0%,rgba(0,0,0,0.7) 6%,rgba(0,0,0,1) 18%,rgba(0,0,0,1) 82%,rgba(0,0,0,0.7) 94%,rgba(0,0,0,0) 100%);
+    mask-image:linear-gradient(to bottom,rgba(0,0,0,0) 0%,rgba(0,0,0,0.7) 6%,rgba(0,0,0,1) 18%,rgba(0,0,0,1) 82%,rgba(0,0,0,0.7) 94%,rgba(0,0,0,0) 100%)}
+  .bg-tint{position:absolute;inset:0;background:radial-gradient(ellipse 100% 45% at 50% 0%,rgba(232,25,75,0.13) 0%,transparent 60%),radial-gradient(ellipse 100% 45% at 50% 100%,rgba(232,25,75,0.10) 0%,transparent 60%);pointer-events:none}
+  .scanlines{position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.055) 2px,rgba(0,0,0,0.055) 4px);pointer-events:none}
+
+  /* LAYOUT */
+  .wrap{position:relative;z-index:1;max-width:780px;margin:0 auto;padding:0 18px 100px}
+
+  /* USER BANNER */
+  .user-banner-wrap{width:100%;height:110px;border-radius:0 0 18px 18px;overflow:hidden;position:relative;opacity:0;animation:fadeUp 0.7s ease 0.1s forwards}
+  #userBanner{width:100%;height:100%;object-fit:cover;object-position:center 35%;filter:brightness(0.9) saturate(1.1)}
+  .banner-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,transparent 40%,rgba(13,0,5,0.85) 100%)}
+
+  /* HEADER */
+  .header{display:flex;align-items:flex-end;gap:18px;padding:0 4px;margin-top:-32px;margin-bottom:22px;position:relative;z-index:2;opacity:0;animation:fadeUp 0.7s ease 0.2s forwards}
+  .av-wrap{position:relative;flex-shrink:0}
+  #avatarImg{width:86px;height:86px;border-radius:50%;object-fit:cover;border:3px solid var(--dark);outline:3px solid var(--pink);box-shadow:0 0 22px rgba(232,25,75,0.5);transition:box-shadow 0.3s,transform 0.3s;background:#1a0008}
+  #avatarImg:hover{box-shadow:0 0 40px rgba(232,25,75,0.75);transform:scale(1.04)}
+  .sring{position:absolute;bottom:5px;right:3px;width:17px;height:17px;border-radius:50%;background:#747f8d;border:3px solid var(--dark);transition:background 0.4s}
+  .htext{flex:1;padding-bottom:4px}
+  .username{font-family:'Zen Tokyo Zoo',cursive;font-size:clamp(22px,5vw,36px);color:#fff;line-height:1;text-shadow:0 0 26px rgba(255,107,138,0.5);letter-spacing:2px}
+  .utag{font-family:'Josefin Sans',sans-serif;font-size:11px;letter-spacing:3px;color:var(--pink);opacity:0.65;margin-top:3px;text-transform:uppercase}
+  .badges{display:flex;gap:5px;flex-wrap:wrap;margin-top:7px}
+  .badge{padding:2px 9px;border-radius:20px;background:rgba(255,107,138,0.10);border:1px solid rgba(255,107,138,0.22);font-size:10px;letter-spacing:1px;color:var(--lp);font-family:'Josefin Sans',sans-serif;text-transform:uppercase;display:inline-flex;align-items:center;gap:4px}
+  .bdot{width:5px;height:5px;border-radius:50%;background:var(--pink)}
+
+  /* DIVIDER */
+  .div{height:1px;background:linear-gradient(90deg,transparent,var(--rose),var(--pink),transparent);opacity:0.3;margin:22px 0}
+
+  /* SECTION */
+  .sec{font-family:'Josefin Sans',sans-serif;font-size:10px;letter-spacing:5px;text-transform:uppercase;color:var(--rose);opacity:0.85;margin-bottom:10px;display:flex;align-items:center;gap:10px}
+  .sec::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(232,25,75,0.4),transparent)}
+
+  /* CARD */
+  .card{background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:17px 19px;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);transition:border-color 0.3s,box-shadow 0.3s,transform 0.25s;opacity:0;animation:fadeUp 0.65s ease both}
+  .card:hover{border-color:rgba(255,107,138,0.48);box-shadow:0 6px 34px rgba(232,25,75,0.17);transform:translateY(-2px)}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+
+  /* PRESENCE */
+  .sbadge{display:inline-flex;align-items:center;gap:5px;padding:2px 9px;border-radius:12px;background:rgba(35,165,90,0.13);border:1px solid rgba(35,165,90,0.28);font-family:'Josefin Sans',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#57f287;margin-bottom:10px}
+  .sdot{width:6px;height:6px;border-radius:50%;background:#23a55a;animation:pg 2s infinite}
+  @keyframes pg{0%,100%{box-shadow:0 0 5px rgba(35,165,90,0.6)}50%{box-shadow:0 0 12px rgba(35,165,90,1)}}
+  .act-row{display:flex;align-items:center;gap:13px}
+  .act-iw{position:relative;flex-shrink:0}
+  .act-i{width:54px;height:54px;border-radius:8px;object-fit:cover;border:1px solid var(--bdr);background:rgba(255,107,138,0.08)}
+  .act-is{position:absolute;bottom:-5px;right:-5px;width:21px;height:21px;border-radius:4px;border:2px solid #0d0005;object-fit:cover}
+  .act-info{flex:1;min-width:0}
+  .act-name{font-size:13px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .act-det{font-size:12px;color:var(--lp);opacity:0.7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .act-time{font-size:11px;color:rgba(255,240,243,0.35);margin-top:1px}
+  .nodata{font-size:12px;color:rgba(255,240,243,0.3);font-style:italic;text-align:center;padding:8px 0}
+
+  /* SPOTIFY */
+  .sp-row{display:flex;align-items:center;gap:13px;margin-top:5px}
+  .sp-t{width:48px;height:48px;border-radius:6px;object-fit:cover;flex-shrink:0;border:1px solid var(--bdr);background:rgba(255,107,138,0.08);animation:spin 9s linear infinite paused}
+  .sp-t.playing{animation-play-state:running}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .sp-info{flex:1;min-width:0}
+  .sp-title{font-size:13px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .sp-art{font-size:11px;color:var(--lp);opacity:0.7}
+  .sp-prog{margin-top:9px;height:2px;border-radius:2px;background:rgba(255,107,138,0.12);overflow:hidden}
+  .sp-fill{height:100%;background:linear-gradient(90deg,var(--rose),var(--lp));border-radius:2px;transition:width 1s linear}
+
+  /* ABOUT */
+  .about{font-size:14px;line-height:1.85;color:rgba(255,240,243,0.82);font-weight:300}
+  .quote{margin-top:13px;border-left:3px solid var(--rose);padding:7px 13px;background:rgba(232,25,75,0.06);border-radius:0 8px 8px 0;font-style:italic;color:var(--lp);font-size:13px;line-height:1.7}
+
+  /* INFO GRID */
+  .igrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:11px;margin-bottom:11px}
+  .ititle{font-family:'Josefin Sans',sans-serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--rose);margin-bottom:6px}
+  .ibody{font-size:13px;color:rgba(255,240,243,0.78);line-height:1.75;font-weight:300}
+
+  /* BOT */
+  .bot-card{overflow:hidden;padding:0;cursor:pointer;text-decoration:none;display:block;border-radius:14px;border:1px solid var(--bdr);background:var(--card);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);transition:border-color 0.3s,box-shadow 0.3s,transform 0.25s;opacity:0;animation:fadeUp 0.65s ease both}
+  .bot-card:hover{border-color:rgba(255,107,138,0.55);box-shadow:0 8px 38px rgba(232,25,75,0.22);transform:translateY(-3px)}
+  #botBanner{width:100%;height:115px;object-fit:cover;object-position:center;display:block;filter:brightness(0.88) saturate(1.2)}
+  .bot-body{padding:14px 17px;display:flex;align-items:center;gap:13px}
+  #botPfp{width:50px;height:50px;border-radius:50%;object-fit:cover;border:2px solid var(--pink);box-shadow:0 0 12px rgba(232,25,75,0.4);flex-shrink:0;margin-top:-32px;position:relative;z-index:1}
+  .bot-info{flex:1}
+  .bot-name{font-size:14px;font-weight:700;color:#fff}
+  .bot-desc{font-size:11px;color:var(--lp);opacity:0.65;margin-top:1px}
+  .bot-online{display:inline-block;font-family:'Josefin Sans',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;background:rgba(87,242,135,0.12);border:1px solid rgba(87,242,135,0.25);color:#57f287;padding:1px 6px;border-radius:10px;margin-top:3px}
+  .bot-inv{display:inline-flex;align-items:center;gap:5px;padding:7px 13px;border-radius:8px;background:rgba(255,107,138,0.13);border:1px solid rgba(255,107,138,0.28);color:var(--lp);font-size:11px;font-family:'Josefin Sans',sans-serif;letter-spacing:1.5px;text-transform:uppercase;text-decoration:none;transition:background 0.2s,color 0.2s;flex-shrink:0}
+  .bot-inv:hover{background:rgba(255,107,138,0.26);color:#fff}
+
+  /* SOCIALS */
+  .soc-row{display:flex;gap:11px;flex-wrap:wrap}
+  .soc-link{display:inline-flex;align-items:center;gap:9px;padding:11px 18px;border-radius:12px;background:var(--card);border:1px solid var(--bdr);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);text-decoration:none;color:#fff0f3;font-family:'Josefin Sans',sans-serif;font-size:12px;letter-spacing:2px;text-transform:uppercase;transition:border-color 0.3s,box-shadow 0.3s,transform 0.25s,background 0.3s;flex:1;min-width:160px}
+  .soc-link:hover{border-color:rgba(255,107,138,0.55);background:rgba(255,107,138,0.10);box-shadow:0 4px 22px rgba(232,25,75,0.2);transform:translateY(-2px)}
+  .soc-icon{width:22px;height:22px;flex-shrink:0}
+  .soc-name{font-weight:700;font-size:13px}
+  .soc-sub{font-size:10px;color:var(--lp);opacity:0.6;letter-spacing:1px}
+
+  /* LIKE */
+  .like-wrap{display:flex;justify-content:center;margin-top:30px;opacity:0;animation:fadeUp 0.65s ease 0.9s both}
+  .like-btn{display:flex;align-items:center;gap:10px;padding:11px 26px;border-radius:40px;background:rgba(255,107,138,0.09);border:2px solid rgba(255,107,138,0.26);color:var(--lp);font-family:'Josefin Sans',sans-serif;font-size:12px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.25s;position:relative;overflow:hidden;user-select:none}
+  .like-btn:hover:not(.voted){background:rgba(255,107,138,0.18);border-color:rgba(255,107,138,0.5);color:#fff;transform:scale(1.04);box-shadow:0 0 22px rgba(232,25,75,0.28)}
+  .like-btn.voted{background:rgba(232,25,75,0.20);border-color:var(--rose);color:#fff;cursor:default}
+  .like-btn.voted .lh{animation:hpop 0.4s ease both}
+  @keyframes hpop{0%{transform:scale(1)}40%{transform:scale(1.55)}70%{transform:scale(0.85)}100%{transform:scale(1)}}
+  .lh{font-size:17px}
+  .lcount{font-size:14px;font-weight:700}
+  .llabel{font-size:9px;opacity:0.65}
+  .ripple{position:absolute;border-radius:50%;background:rgba(232,25,75,0.28);transform:scale(0);animation:rip 0.6s ease-out;pointer-events:none}
+  @keyframes rip{to{transform:scale(4);opacity:0}}
+
+  /* HEARTS */
+  .hbg{position:fixed;inset:0;pointer-events:none;z-index:2;overflow:hidden}
+  .hp{position:absolute;animation:fh linear forwards;opacity:0.55;pointer-events:none}
+  @keyframes fh{0%{transform:translateY(100vh) scale(0);opacity:0.55}80%{opacity:0.35}100%{transform:translateY(-40px) scale(1.1);opacity:0}}
+
+  .corner{position:fixed;top:16px;right:14px;font-family:'Josefin Sans',sans-serif;font-size:9px;letter-spacing:3px;color:rgba(255,107,138,0.22);text-transform:uppercase;writing-mode:vertical-rl;pointer-events:none;z-index:3}
+
+  /* DELAYS */
+  .d1{animation-delay:0.3s}.d2{animation-delay:0.4s}.d3{animation-delay:0.5s}
+  .d4{animation-delay:0.6s}.d5{animation-delay:0.7s}.d6{animation-delay:0.8s}
+
+  @media(max-width:520px){
+    .header{flex-direction:column;align-items:flex-start}
+    .bot-body{flex-wrap:wrap}
+    .bot-inv{width:100%;justify-content:center;margin-top:6px}
+    .soc-link{min-width:100%;flex:auto}
+  }
+</style>
+</head>
+<body>
+
+<div class="hbg" id="hc"></div>
+<div class="corner">Zero Two ♥ 002</div>
+
+<div class="bg-layer">
+  <img id="bgImg" alt="">
+  <div class="bg-tint"></div>
+  <div class="scanlines"></div>
+</div>
+
+<div class="wrap">
+
+  <div class="user-banner-wrap">
+    <img id="userBanner" alt="banner">
+    <div class="banner-overlay"></div>
+  </div>
+
+  <div class="header">
+    <div class="av-wrap">
+      <img id="avatarImg" alt="avatar">
+      <div class="sring" id="sring"></div>
+    </div>
+    <div class="htext">
+      <div class="username" id="dispName">Loading...</div>
+      <div class="utag" id="userTag">@username</div>
+      <div class="badges">
+        <span class="badge"><span class="bdot"></span>Darling in the FranXX</span>
+        <span class="badge"><span class="bdot" style="background:#57f287"></span>Day Trader</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec d1">// Live Presence</div>
+  <div class="card d1" style="margin-bottom:11px">
+    <div id="sbadge"><div class="sbadge"><span class="sdot" style="background:#747f8d"></span>Loading...</div></div>
+    <div id="actEl"><div class="nodata">Connecting to Lanyard...</div></div>
+  </div>
+
+  <div class="sec d2">// Now Playing</div>
+  <div class="card d2" style="margin-bottom:11px">
+    <div id="spEl"><div class="nodata">Connecting to Lanyard...</div></div>
+  </div>
+
+  <div class="div"></div>
+
+  <div class="sec d3">// About Me</div>
+  <div class="card d3" style="margin-bottom:11px">
+    <div class="about">
+      Engineering-minded and market-focused — I work with digital electronics, RTL design, and C++ systems architecture with structured logic and clean flow. When I'm not grinding markets or writing systems code, I'm deep in competitive sessions across Apex Legends and League of Legends.
+    </div>
+    <div class="quote">"Don't fear death. Fear that your life ends before you accomplish your goals."</div>
+  </div>
+
+  <div class="igrid d4">
+    <div class="card" style="animation-delay:0.6s">
+      <div class="ititle">// Engineering</div>
+      <div class="ibody">Digital electronics, RTL design, and C++ systems architecture with structured logic and clean flow.</div>
+    </div>
+    <div class="card" style="animation-delay:0.6s">
+      <div class="ititle">// Gaming</div>
+      <div class="ibody">Competitive and tactical play across Apex Legends, League of Legends and strategy-heavy sessions.</div>
+    </div>
+  </div>
+  <div class="card d4" style="margin-bottom:14px">
+    <div class="ititle">// Day Trader</div>
+    <div class="ibody">Market volatility specialist focused on discipline, timing, and asymmetric opportunity.</div>
+  </div>
+
+  <div class="div"></div>
+
+  <div class="sec d5">// My Bot</div>
+  <a href="https://discord.com/oauth2/authorize?client_id=1421206202221596754" target="_blank" rel="noopener" class="bot-card d5" style="margin-bottom:14px">
+    <img id="botBanner" alt="Bot Banner">
+    <div class="bot-body">
+      <img id="botPfp" alt="Zero Two Bot">
+      <div class="bot-info">
+        <div class="bot-name">Zero Two Bot</div>
+        <div class="bot-desc">Your darling in the server ♥</div>
+        <div class="bot-online">✓ Online</div>
+      </div>
+      <span class="bot-inv">+ Invite</span>
+    </div>
+  </a>
+
+  <div class="div"></div>
+
+  <div class="sec d6">// Socials</div>
+  <div class="soc-row d6" style="opacity:0;animation:fadeUp 0.65s ease 0.8s both">
+    <a href="https://discord.com/users/738501782413639790" target="_blank" rel="noopener" class="soc-link">
+      <svg class="soc-icon" viewBox="0 0 24 24" fill="none">
+        <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z" fill="#5865F2"/>
+      </svg>
+      <div>
+        <div class="soc-name">Discord</div>
+        <div class="soc-sub">738501782413639790</div>
+      </div>
+    </a>
+  </div>
+
+  <div class="like-wrap">
+    <button class="like-btn" id="likeBtn" onclick="handleLike(event)">
+      <span class="lh">♥</span>
+      <span>
+        <div class="lcount" id="likeCount">...</div>
+        <div class="llabel">Likes</div>
+      </span>
+    </button>
+  </div>
+
+</div>
+
+<script>
+// ── Apply images from images.js (or show fallback) ──
+function applyImages() {
+  const bg = window.IMG_BG || '';
+  const pfp = window.IMG_PFP || '';
+  const bb  = window.IMG_BOT_BANNER || '';
+
+  if (bg)  document.getElementById('bgImg').src = bg;
+  if (pfp) document.getElementById('botPfp').src = pfp;
+  if (bb)  document.getElementById('botBanner').src = bb;
+
+  // User banner — fallback gradient if no file
+  const ub = document.getElementById('userBanner');
+  if (window.IMG_BANNER) {
+    ub.src = window.IMG_BANNER;
+  } else {
+    ub.style.display = 'none';
+    document.querySelector('.user-banner-wrap').style.background =
+      'linear-gradient(135deg,#3a0012 0%,#1a0008 50%,#2d000f 100%)';
+  }
+}
+applyImages();
+
+// ── Lanyard ──
+const UID = '738501782413639790';
+const SC = {online:'#23a55a',idle:'#f0b232',dnd:'#f23f43',offline:'#747f8d'};
+const SL = {online:'Online',idle:'Idle',dnd:'Do Not Disturb',offline:'Offline'};
+
+function fmtMs(ms) {
+  const s=Math.floor(ms/1000),m=Math.floor(s/60),h=Math.floor(m/60);
+  return h>0?`${h}h ${m%60}m elapsed`:`${m}m ${s%60}s elapsed`;
+}
+
+function renderProfile(d) {
+  document.getElementById('sring').style.background = SC[d.discord_status]||'#747f8d';
+  const u = d.discord_user||{};
+  document.getElementById('dispName').textContent = u.display_name||u.global_name||u.username||'User';
+  document.getElementById('userTag').textContent = u.username?`@${u.username}`:`ID: ${UID}`;
+  if (u.avatar) {
+    const ext = u.avatar.startsWith('a_')?'gif':'png';
+    document.getElementById('avatarImg').src =
+      `https://cdn.discordapp.com/avatars/${u.id}/${u.avatar}.${ext}?size=128`;
+  } else {
+    document.getElementById('avatarImg').src =
+      `https://cdn.discordapp.com/embed/avatars/0.png`;
+  }
+  const c=SC[d.discord_status]||'#747f8d', l=SL[d.discord_status]||'Offline';
+  document.getElementById('sbadge').innerHTML =
+    `<div class="sbadge"><span class="sdot" style="background:${c}"></span>${l}</div>`;
+}
+
+function renderActivity(d) {
+  const el = document.getElementById('actEl');
+  const acts = (d.activities||[]).filter(a=>a.type!==2);
+  if (!acts.length) { el.innerHTML='<div class="nodata">No active session right now.</div>'; return; }
+  const a = acts[0];
+  const getImg = (raw, appId) => !raw ? '' :
+    raw.startsWith('mp:external/')
+      ? 'https://media.discordapp.net/external/'+raw.replace('mp:external/','')
+      : `https://cdn.discordapp.com/app-assets/${appId}/${raw}.png`;
+  const li = getImg(a.assets?.large_image, a.application_id);
+  const si = getImg(a.assets?.small_image, a.application_id);
+  const elapsed = a.timestamps?.start ? fmtMs(Date.now()-a.timestamps.start) : '';
+  el.innerHTML = `
+    <div class="act-row">
+      <div class="act-iw">
+        ${li?`<img class="act-i" src="${li}" onerror="this.style.opacity=0.2" alt="">`:'<div class="act-i"></div>'}
+        ${si?`<img class="act-is" src="${si}" onerror="this.style.display='none'" alt="">`:''}
+      </div>
+      <div class="act-info">
+        <div class="act-name">${a.name||'Activity'}</div>
+        <div class="act-det">${a.details||''}</div>
+        <div class="act-det">${a.state||''}</div>
+        ${elapsed?`<div class="act-time">${elapsed}</div>`:''}
+      </div>
+    </div>`;
+}
+
+function renderSpotify(d) {
+  const el = document.getElementById('spEl');
+  const sp = d.spotify;
+  if (!sp) { el.innerHTML='<div class="nodata">Not listening to anything right now.</div>'; return; }
+  const prog = sp.timestamps
+    ? Math.min(100,((Date.now()-sp.timestamps.start)/(sp.timestamps.end-sp.timestamps.start))*100) : 0;
+  el.innerHTML = `
+    <div class="sp-row">
+      <img class="sp-t playing" src="${sp.album_art_url||''}" onerror="this.style.opacity=0.25" alt="">
+      <div class="sp-info">
+        <div class="sp-title">${sp.song}</div>
+        <div class="sp-art">by ${sp.artist}</div>
+        <div style="font-size:10px;color:rgba(255,240,243,0.3);margin-top:1px">on ${sp.album}</div>
+      </div>
+    </div>
+    <div class="sp-prog"><div class="sp-fill" id="spFill" style="width:${prog}%"></div></div>`;
+  if (sp.timestamps) {
+    setInterval(()=>{
+      const b=document.getElementById('spFill'); if(!b)return;
+      b.style.width=Math.min(100,((Date.now()-sp.timestamps.start)/(sp.timestamps.end-sp.timestamps.start))*100)+'%';
+    },1000);
+  }
+}
+
+async function fetchPresence() {
+  try {
+    const r = await fetch(`https://api.lanyard.rest/v1/users/${UID}`);
+    const j = await r.json();
+    if (!j.success) throw new Error('no data');
+    renderProfile(j.data);
+    renderActivity(j.data);
+    renderSpotify(j.data);
+  } catch(e) {
+    document.getElementById('actEl').innerHTML = '<div class="nodata">Presence unavailable.</div>';
+    document.getElementById('spEl').innerHTML  = '<div class="nodata">Spotify unavailable.</div>';
+    document.getElementById('sbadge').innerHTML =
+      `<div class="sbadge"><span class="sdot" style="background:#747f8d"></span>Offline</div>`;
+  }
+}
+fetchPresence();
+setInterval(fetchPresence, 15000);
+
+// ── Like button (localStorage — 1 vote per browser) ──
+const LK='plikes_v3', VK='pvoted_v3';
+const getLikes=()=>{try{return parseInt(localStorage.getItem(LK)||'247')}catch(e){return 247}};
+const saveLikes=n=>{try{localStorage.setItem(LK,n)}catch(e){}};
+const hasVoted=()=>{try{return!!localStorage.getItem(VK)}catch(e){return false}};
+const markVoted=()=>{try{localStorage.setItem(VK,'1')}catch(e){}};
+
+function initLikes() {
+  document.getElementById('likeCount').textContent = getLikes().toLocaleString();
+  if (hasVoted()) {
+    const b=document.getElementById('likeBtn');
+    b.classList.add('voted');
+    b.querySelector('.lh').textContent='❤';
+  }
+}
+
+function handleLike(e) {
+  if (hasVoted()) return;
+  const btn=document.getElementById('likeBtn');
+  const rect=btn.getBoundingClientRect();
+  const r=document.createElement('div');
+  r.className='ripple';
+  const sz=Math.max(rect.width,rect.height);
+  r.style.cssText=`width:${sz}px;height:${sz}px;left:${e.clientX-rect.left-sz/2}px;top:${e.clientY-rect.top-sz/2}px`;
+  btn.appendChild(r);
+  setTimeout(()=>r.remove(),700);
+  const n=getLikes()+1;
+  saveLikes(n); markVoted();
+  document.getElementById('likeCount').textContent=n.toLocaleString();
+  btn.classList.add('voted');
+  btn.querySelector('.lh').textContent='❤';
+  for(let i=0;i<7;i++) setTimeout(()=>spawnHeart(true),i*70);
+}
+initLikes();
+
+// ── Hearts ──
+function spawnHeart(burst=false) {
+  const c=document.getElementById('hc');
+  const h=document.createElement('div');
+  h.className='hp';
+  h.textContent=['♥','♡','❤','🌸','✿'][Math.floor(Math.random()*5)];
+  h.style.left=(burst?38+Math.random()*24:Math.random()*100)+(burst?'%':'vw');
+  h.style.fontSize=(burst?14+Math.random()*14:9+Math.random()*13)+'px';
+  h.style.animationDuration=(burst?1.2+Math.random()*1.5:4+Math.random()*5)+'s';
+  c.appendChild(h);
+  setTimeout(()=>h.remove(),burst?3000:9000);
+}
+setInterval(spawnHeart,1500);
+</script>
+</body>
+</html>
